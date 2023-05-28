@@ -45,7 +45,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server, {
   cors: {
-    origin: 'https://usa-states-quiz-fs.vercel.app/',
+    origin: 'https://usa-states-quiz-fs.vercel.app',
   },
 });
 
