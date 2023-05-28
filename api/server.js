@@ -49,6 +49,10 @@ const io = socketIO(server, {
   },
 });
 
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+})
+
 io.on('connection', (socket) => {
   let url;
 
@@ -90,4 +94,4 @@ const port = process.env.PORT || 3000;
 
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
-});
+})
