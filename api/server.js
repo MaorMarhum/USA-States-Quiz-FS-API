@@ -9,7 +9,6 @@ const io = socketIO(server, {
     origin: 'https://usa-states-quiz-fs.vercel.app',
   },
 });
-io.set('debug', true);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
