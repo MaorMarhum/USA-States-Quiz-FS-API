@@ -12,7 +12,7 @@ const io = socketIO(server, {
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
-})
+});
 
 io.on('connection', (socket) => {
   let url;
@@ -23,31 +23,49 @@ io.on('connection', (socket) => {
     }
     url = roomUrl;
     socket.join(url);
-    const userCount = io.sockets.adapter.rooms.get(url)?.size || 0;
-    io.to(url).emit('userCount', userCount);
+    try {
+      const userCount = io.sockets.adapter.rooms.get(url)?.size || 0;
+      io.to(url).emit('userCount', userCount);
+    } catch (error) {
+      console.error('Error in joinRoom:', error);
+    }
   });
 
   // game
   socket.on('startGame', ({ url, roomCode }) => {
-    socket.to(url).emit('navigateToURL', `/game/${roomCode}`);
-    socket.emit('firstTurn', 1);
+    try {
+      socket.to(url).emit('navigateToURL', `/game/${roomCode}`);
+      socket.emit('firstTurn', 1);
+    } catch (error) {
+      console.error('Error in startGame:', error);
+    }
   });
 
   socket.on('success', (stateToRemove) => {
-    socket
-      .to(url)
-      .emit('yourTurn', { turnNumber: 1, stateToRemove: stateToRemove });
+    try {
+      socket.to(url).emit('yourTurn', { turnNumber: 1, stateToRemove: stateToRemove });
+    } catch (error) {
+      console.error('Error in success:', error);
+    }
   });
 
   socket.on('gameOver', () => {
-    socket.to(url).emit('gameOver');
+    try {
+      socket.to(url).emit('gameOver');
+    } catch (error) {
+      console.error('Error in gameOver:', error);
+    }
   });
   // end game
 
   socket.on('disconnect', () => {
     console.log('user disconnected');
-    const count = io.sockets.adapter.rooms.get(url)?.size || 0;
-    io.emit('userLeft', count);
+    try {
+      const count = io.sockets.adapter.rooms.get(url)?.size || 0;
+      io.emit('userLeft', count);
+    } catch (error) {
+      console.error('Error in disconnect:', error);
+    }
   });
 });
 
@@ -55,4 +73,4 @@ const port = process.env.PORT || 3000;
 
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
-})
+});
