@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
     try {
       socket.to(url).emit('gameOver');
     } catch (error) {
-      console.error('Error in gameOver:', error);
+      console.error('Error in gameOver:', error)
     }
   });
   // end game
