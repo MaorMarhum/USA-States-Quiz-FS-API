@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
       socket.to(url).emit('navigateToURL', `/game/${roomCode}`);
       socket.emit('firstTurn', 1);
     } catch (error) {
-      console.error('Error in startGame:', error);
+      console.error('Error in startGame:', error)
     }
   });
 
