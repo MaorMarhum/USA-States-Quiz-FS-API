@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
   // game
   socket.on('startGame', ({ url, roomCode }) => {
     try {
-      socket.to(url).emit('navigateToURL', `/game/${roomCode}`);
+      socket.to(url).emit('navigateToURL', `/game/${roomCode}`)
       socket.emit('firstTurn', 1);
     } catch (error) {
       console.error('Error in startGame:', error)
