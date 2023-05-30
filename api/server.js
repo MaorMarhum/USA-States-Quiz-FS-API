@@ -64,7 +64,7 @@ io.on('connection', (socket) => {
       const count = io.sockets.adapter.rooms.get(url)?.size || 0;
       io.emit('userLeft', count);
     } catch (error) {
-      console.error('Error in disconnect:', error);
+      console.error('Error in disconnect:', error)
     }
   });
 });
