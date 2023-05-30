@@ -27,7 +27,7 @@ io.on('connection', (socket) => {
       const userCount = io.sockets.adapter.rooms.get(url)?.size || 0;
       io.to(url).emit('userCount', userCount);
     } catch (error) {
-      console.error('Error in joinRoom:', error);
+      console.error('Error in joinRoom:', error)
     }
   });
 
