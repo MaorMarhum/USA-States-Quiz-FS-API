@@ -22,7 +22,7 @@ const connection = mysql.createConnection(process.env.DATABASE_URL);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
-});
+})
 
 app.get("/players/:roomCode", (req, res) => {
   const roomCode = req.params.roomCode;
