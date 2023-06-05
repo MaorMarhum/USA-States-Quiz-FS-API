@@ -22,7 +22,29 @@ const connection = mysql.createConnection(process.env.DATABASE_URL);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
-})
+});
+
+app.get("/scores", (req, res) => {
+  connection.execute(
+    `SELECT * FROM usa_game
+    ORDER BY score DESC
+    LIMIT 3`,
+    (error, results) => {
+      if (error) {
+        console.error("Error retrieving data from the database:", error);
+        res.status(500).json({ error: "An error occurred" });
+      } else {
+        if (results.length > 0) {
+          res.json(results);
+        } else {
+          res
+            .status(404)
+            .json({ message: "No data found for the given room code" });
+        }
+      }
+    }
+  );
+});
 
 app.get("/players/:roomCode", (req, res) => {
   const roomCode = req.params.roomCode;
@@ -40,7 +62,9 @@ app.get("/players/:roomCode", (req, res) => {
           const player2Name = results[0].player2_name;
           res.json({ player1Name, player2Name });
         } else {
-          res.status(404).json({ message: "No data found for the given room code" });
+          res
+            .status(404)
+            .json({ message: "No data found for the given room code" });
         }
       }
     }
@@ -92,10 +116,9 @@ io.on("connection", (socket) => {
     );
   });
 
-  socket.on('missingName', (name) => {
-    console.log(name)
-    socket.to(url).emit('missingName', name);
-  })
+  socket.on("missingName", (name) => {
+    socket.to(url).emit("missingName", name);
+  });
 
   // game
   socket.on("startGame", ({ url, roomCode }) => {
@@ -117,13 +140,25 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("gameOver", () => {
+  socket.on("gameOver", ({ score, roomCode }) => {
     try {
+      connection.execute(
+        "UPDATE usa_game SET score = ? WHERE room_code = ?",
+        [score, roomCode],
+        (error, results) => {
+          if (error) {
+            console.error("Error in executing update query:", error);
+          } else {
+            console.log("Update successful");
+          }
+        }
+      );
       socket.to(url).emit("gameOver");
     } catch (error) {
       console.error("Error in gameOver:", error);
     }
   });
+
   // end game
 
   socket.on("disconnect", () => {
